@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "20220718-DonRomaniello-NYCSchools",
+    "slug": "20220718-DonRomaniello-NYCSchools",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "20220718-DonRomaniello-NYCSchools"
+}
