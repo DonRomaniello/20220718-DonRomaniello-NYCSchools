@@ -62,7 +62,14 @@ export default List = () => {
         // The array returned from the API call is not sorted alphabetically.
         schoolsObject.sort((a, b) => a.name.localeCompare(b.name))
         setSchoolData(schoolsObject)
-      }).catch((error) => {})
+      }).catch((error) => {
+        /* If there is an error fetching the school data,
+        the user should get some sort of warning so they aren't
+        left with a blank screen. */
+        setSchoolData([{name: 'Error retrieving schools...',
+                        dbn: '1',
+                        website: null}])
+      })
     }
     fetchSchools();
   }, [])
