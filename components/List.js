@@ -21,12 +21,28 @@ import {
         } from 'react-native';
 
 
+const Item = (props) => {
 
-const Item = ({ title }) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
+  const { title } = props;
+
+  /* State that represents whether an item in the list
+  has been opened.*/
+  const [isOpened, setIsOpened] = useState(false);
+
+  return (
+    <View
+    style={isOpened ? openedFlattenedStyle : styles.item}
+    >
+    <Text
+    onPress={() => {
+      setIsOpened(!isOpened)}}
+    style={styles.title}>{title}</Text>
+    {isOpened ?
+    <Text>It is opened</Text>
+      : null}
   </View>
-);
+    )
+  };
 
 export default List = () => {
   const renderItem = ({ item }) => (
@@ -127,11 +143,27 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: 'rgba(154, 233, 254, .2)',
-    padding: 20,
+    borderRadius: 3,
     marginVertical: 8,
     marginHorizontal: 16,
+    padding: 20,
   },
   title: {
     fontSize: 16,
   },
 });
+
+/* To avoid having to rewrite the style sheet, this simply
+changes the background to indicate something is selected.*/
+const openStyles = StyleSheet.create({
+  item: {
+    backgroundColor:  'rgba(154, 233, 254, .6)'
+
+  },
+})
+
+/* This function combines the two styles */
+const openedFlattenedStyle = StyleSheet.flatten([
+    styles.item,
+    openStyles.item
+  ])
