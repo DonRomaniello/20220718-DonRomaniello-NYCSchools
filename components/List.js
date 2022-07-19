@@ -1,7 +1,7 @@
-// Using this example from the React Native documentation
-// https://reactnative.dev/docs/flatlist
+/* Using this example from the React Native documentation
+https://reactnative.dev/docs/flatlist
 
-// Using Axios to access NYC API
+Using Axios to access NYC API */
 import axios from 'axios';
 
 import React, {
@@ -9,8 +9,8 @@ import React, {
        useState,
        } from 'react';
 
-// My preference is to alphabetize and split imports across lines, it makes it
-// easier to alphabetize and keep clean
+/* My preference is to alphabetize and split imports across lines, it makes it
+ easier to alphabetize and keep clean. */
 import {
         FlatList,
         SafeAreaView,
@@ -33,13 +33,17 @@ export default List = () => {
     <Item title={item.name} />
   );
 
-  // The school information will be a list
+  /* The school information will be a list */
   const [schoolData, setSchoolData] = useState([]);
 
+  /* Because both the School and SAT data use unique but consisitent DBNs,
+   the SAT data will be a dictionary with DBNs as the keys. */
+  const [satData, setSatData] = useState({})
+
+  /* API calls placed in a useEffect, called when the component mounts */
   useEffect(() => {
 
     const schoolUrl = 'https://data.cityofnewyork.us/resource/s3k6-pzi2.json'
-
 
     const fetchSchools = async () => {
       await axios.get(schoolUrl)
@@ -54,12 +58,13 @@ export default List = () => {
           let newSchool = {
               dbn: school?.dbn,
               name: school?.school_name,
-              website: school?.website
+              website: school?.website,
+              students: school?.total_students,
             }
           schoolsObject.push(newSchool)
         })
 
-        // The array returned from the API call is not sorted alphabetically.
+        /* The array returned from the API call is not sorted alphabetically. */
         schoolsObject.sort((a, b) => a.name.localeCompare(b.name))
         setSchoolData(schoolsObject)
       }).catch((error) => {
@@ -71,7 +76,34 @@ export default List = () => {
                         website: null}])
       })
     }
+
     fetchSchools();
+
+    const satURL = 'https://data.cityofnewyork.us/resource/f9bf-2cp4.json'
+    const fetchSats = async () => {
+      await axios.get(satURL)
+      .then((response) => {
+        let satsObject = {}
+        response.data.forEach((satsSchool) => {
+          /* The DBN will be the key */
+          let satsSchoolKey = satsSchool?.dbn
+
+          /* These seem like the most relevant pieces of data. */
+          let newSat = {
+              testTakers: satsSchool?.num_of_sat_test_takers,
+              critical_reading: satsSchool?.sat_critical_reading_avg_score,
+              math: satsSchool?.sat_math_avg_score,
+              writing: satsSchool?.sat_writing_avg_score,
+            }
+          satsObject[satsSchoolKey] = newSat
+        })
+        setSatData(satsObject)
+      }).catch((error) => {
+      })
+    }
+
+    fetchSats();
+
   }, [])
 
 
@@ -94,12 +126,12 @@ const styles = StyleSheet.create({
     marginTop: StatusBar.currentHeight || 0,
   },
   item: {
-    backgroundColor: 'rgba(1, 111, 141 .2)',
+    backgroundColor: 'rgba(154, 233, 254, .2)',
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
   },
   title: {
-    fontSize: 32,
+    fontSize: 16,
   },
 });
